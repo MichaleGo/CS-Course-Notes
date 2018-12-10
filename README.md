@@ -1,1 +1,1 @@
-### summary of learned knowledge
+### summary of CS fudamental course notes
