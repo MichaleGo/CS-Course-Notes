@@ -12,7 +12,6 @@
 ---
 #### 1.1 操作系统的定义
 1.  计算机系统从下到上划分为四个层次。
-    ![2aaaf72ef44e1ba7c4573e67c1aad242.png](en-resource://database/925:1)
     ![](https://i.screenshot.net/4dnovux)
     * 硬件层由计算机的硬件资源组成，包括中央处理机（CPU）、存储器、输入输出设备。
     * 操作系统只包含操作系统内核。如Windows系统的Ntoskrnl.exe。
@@ -139,7 +138,6 @@ I/**O操作**：可能涉及到文件或I/O设备
     > Windows系统提供的Win32 API函数集合，是一些库函数，由库函数去调用系统调用。
     > 
     系统调用执行过程
-    ![9b6631a9982466a4a9bc3f01bd2e361a.png](en-resource://database/931:1)
       ![系统调用](https://i.screenshot.net/eyrgeik)
      
 5. CPU运行状态：用户态和核心态
