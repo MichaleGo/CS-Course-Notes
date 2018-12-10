@@ -1,1 +1,1 @@
-### summary of CS fudamental course notes
+### Summary of CS fudamental course notes
