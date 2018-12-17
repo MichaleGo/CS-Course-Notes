@@ -75,7 +75,7 @@ def filter(img, kernel):
 
 def main():
     # 设置文件目录
-    path_dir = r'E:\F disk\GitHub\CS-Course-Notes\数字图像处理\图像处理上机大作业'
+    path_dir = r'E:\F disk\GitHub\CS-Course-Notes\数字图像处理\滤波'
     # lenna图片路径
     path = os.path.join(path_dir, 'lenna.jpg')
     img = np.array(Image.open(path), dtype=np.int32)
@@ -102,9 +102,10 @@ def main():
     scipy.misc.toimage(filtered_img).save(
         os.path.join(path_dir, 'gaussian_3_5_lenna.jpg'))
 
+
 #   对比实验结果
 def display():
-    path_dir = r'E:\F disk\GitHub\CS-Course-Notes\数字图像处理\图像处理上机大作业'
+    path_dir = r'E:\F disk\GitHub\CS-Course-Notes\数字图像处理\滤波'
     ####################################################
     # 拉普拉斯滤波后图像与原图像的比较
     plt.subplot(1, 3, 1)
