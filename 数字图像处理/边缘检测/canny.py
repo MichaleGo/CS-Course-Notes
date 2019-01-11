@@ -2,24 +2,24 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 import scipy.misc
+import math
 import os
 
 
 # 获得一个拉普拉斯锐化算子，此处均采用3*3的算子
 # 参数：    center：锐化算子中心的权重（4 或 8）
-def get_laplas_kernel(center=4):
-    laplas_kernel = np.zeros((3, 3), dtype=np.int32)
-    d = {4: 0, 8: 1}
-    laplas_kernel = np.array([
-        [[0, -1, 0],
-         [-1, 4, -1],
-         [0, -1, 0]],
+def get_sobel_kernel(x):
+    sobel_kernel = np.zeros((3, 3), dtype=np.int32)
+    sobel_kernel = np.array([
+        [[-1, -2, -1],
+         [0, 0, 0],
+         [1, 2, 1]],    # Gx
 
-        [[-1, -1, -1],
-         [-1, 8, -1],
-         [-1, -1, -1]]
+        [[-1, 0, 1],
+         [-2, 0, 2],
+         [-1, 0, 1]]    # Gy
     ])
-    return laplas_kernel[d[center]]
+    return sobel_kernel[x]
 
 
 # 获得一个高斯滤波算子，可以选择算子的大小以及方差sigma的取值
@@ -30,11 +30,11 @@ def get_gaussian_kernel(sigma=3, kernel_size=3):
     guassian_kernel = np.zeros((kernel_size, kernel_size))
 
     # 计算像素点的平方和距离
-    distance = lambda x, y: (x - int(kernel_size/2))**2 + \
+    def distance(x, y): return (x - int(kernel_size/2))**2 + \
         (y - int(kernel_size/2))**2
 
     # 计算高斯函数值
-    gaussian_func = lambda x, y: np.exp(-distance(x, y) /
+    def gaussian_func(x, y): return np.exp(-distance(x, y) /
                                            (2*sigma*sigma)) / (2*3.1416*sigma*sigma)
     # i，j位置使用高斯核进行卷积
     total = 0.
@@ -75,33 +75,28 @@ def filter(img, kernel):
 
 def main():
     # 设置文件目录
-    path_dir = r'E:\F disk\GitHub\CS-Course-Notes\数字图像处理\滤波'
+    path_dir = r'E:\F disk\GitHub\CS-Course-Notes\数字图像处理\边缘检测'
     # lenna图片路径
     path = os.path.join(path_dir, 'lenna.jpg')
     img = np.array(Image.open(path), dtype=np.int32)
 
-    #################################################
-    # 拉普拉斯滤波
-    laplas_kernel = get_laplas_kernel(4)
-    filtered_img = filter(img, laplas_kernel)
-    # 拉普拉斯灰度滤波会存在滤波后灰度值>255的情况，冲突处理有两个办法
-    # 方法一：采取归一化的方法，但是会在平滑的部分失真
-    # filtered_img = (255.0 / (filtered_img.max()-filtered_img.min()) * (filtered_img - filtered_img.min())).astype(np.uint8)
-    # 方法二：如下
-    filtered_img[filtered_img > 255] = 255
-    filtered_img[filtered_img < 0] = 0
-    scipy.misc.toimage(filtered_img).save(
-        os.path.join(path_dir, 'laplas_4_lenna.jpg'))
-
-    #################################################
-    # 高斯滤波
-    # img = np.array(Image.open(os.path.join(path_dir, 'lenna_with_gaussian_noise.png')))
     guassian_kernel = get_gaussian_kernel(3, 5)
     filtered_img = filter(img, guassian_kernel)
-    print(filtered_img)
-    filtered_img[filtered_img > 255] = 255
-    scipy.misc.toimage(filtered_img).save(
-        os.path.join(path_dir, 'gaussian_3_5_lenna.jpg'))
+    #################################################
+    # sobel边缘检测
+    sobel_kernel_x = get_sobel_kernel(0)
+    Gx = filter(img, sobel_kernel_x)
+    sobel_kernel_y = get_sobel_kernel(1)
+    Gy = filter(img, sobel_kernel_y)
+
+    Gx_Gy = np.abs(Gx) + np.abs(Gy)
+    theta = np.arctan2(Gy, Gx)*180/np.pi
+
+    theta[theta >= -90 and theta < -67.5] = 1
+    theta[theta >= -67.5 and theta < -22.5] = 45
+    theta[theta >= -22.5 and theta < 22.5] = 0
+    theta[theta >= 22.5 and theta < 67.5] = -45
+    theta[theta >= -67.5 and theta <= 90] = 1
 
 
 #   对比实验结果
@@ -165,4 +160,3 @@ def display():
 
 if __name__ == '__main__':
     main()
-    display()
