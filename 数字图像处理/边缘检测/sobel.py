@@ -10,13 +10,13 @@ import os
 def get_sobel_kernel(x):
     sobel_kernel = np.zeros((3, 3), dtype=np.int32)
     sobel_kernel = np.array([
-        [[-1, -2, -1],
+        [[-1, -4, -1],
          [0, 0, 0],
-         [1, 2, 1]],    # Gx
+         [1, 4, 1]],    # Gx    检测水平边沿
 
         [[-1, 0, 1],
-         [-2, 0, 2],
-         [-1, 0, 1]]    # Gy
+         [-4, 0, 4],
+         [-1, 0, 1]]    # Gy    检测竖直边沿
     ])
     return sobel_kernel[x]
 
@@ -87,7 +87,7 @@ def main():
     filtered_img[filtered_img > 255] = 255
     filtered_img[filtered_img < 0] = 0
     scipy.misc.toimage(np.abs(Gx)).save(
-        os.path.join(path_dir, 'Gx.jpg'))
+        os.path.join(path_dir, 'Gx_4.jpg'))
     scipy.misc.toimage(filtered_img).save(
         os.path.join(path_dir, 'sobel_Gx.jpg'))
 
@@ -97,73 +97,74 @@ def main():
     filtered_img[filtered_img > 255] = 255
     filtered_img[filtered_img < 0] = 0
     scipy.misc.toimage(np.abs(Gy)).save(
-        os.path.join(path_dir, 'Gy.jpg'))
+        os.path.join(path_dir, 'Gy_4.jpg'))
     scipy.misc.toimage(filtered_img).save(
         os.path.join(path_dir, 'sobel_Gy.jpg'))
 
     scipy.misc.toimage(np.abs(Gy) + np.abs(Gx)).save(
-        os.path.join(path_dir, 'Gx+Gy.jpg'))
-
+        os.path.join(path_dir, 'Gx+Gy_4.jpg'))
 
 
 #   对比实验结果
 def display():
-    path_dir = r'E:\F disk\GitHub\CS-Course-Notes\数字图像处理\滤波'
+    path_dir = r'E:\F disk\GitHub\CS-Course-Notes\数字图像处理\边缘检测'
     ####################################################
     # 拉普拉斯滤波后图像与原图像的比较
     plt.subplot(1, 3, 1)
-    img = plt.imread(os.path.join(path_dir, 'lenna.jpg'))
+    img = plt.imread(os.path.join(path_dir, 'Gx.jpg'))
     plt.imshow(img, cmap='gray')
-    plt.title('origin')
+    plt.title('|Gx_2|')
 
     plt.subplot(1, 3, 2)
-    img = plt.imread(os.path.join(path_dir, 'laplas_4_lenna.jpg'))
+    img = plt.imread(os.path.join(path_dir, 'Gy.jpg'))
     plt.imshow(img, cmap='gray')
-    plt.title('laplas kernel_center=4')
+    plt.title('|Gy_2|')
 
     plt.subplot(1, 3, 3)
-    img = plt.imread(os.path.join(path_dir, 'laplas_8_lenna.jpg'))
+    img = plt.imread(os.path.join(path_dir, 'Gx+Gy.jpg'))
     plt.imshow(img, cmap='gray')
-    plt.title('laplas kernel_center=8')
+    plt.title('|Gx|+|Gy|_2')
 
     plt.show()
-    ####################################################
-    # 高斯核方差sigma相同时，不同大小高斯核滤波后图像与原图像的比较
-    plt.subplot(1, 3, 1)
-    img = plt.imread(os.path.join(path_dir, 'lenna.jpg'))
-    plt.imshow(img, cmap='gray')
-    plt.title('origin')
+    # ####################################################
+    # # 高斯核方差sigma相同时，不同大小高斯核滤波后图像与原图像的比较
+    # plt.subplot(1, 3, 1)
+    # img = plt.imread(os.path.join(path_dir, 'lenna.jpg'))
+    # plt.imshow(img, cmap='gray')
+    # plt.title('origin')
 
-    plt.subplot(1, 3, 2)
-    img = plt.imread(os.path.join(path_dir, 'gaussian_3_3_lenna.jpg'))
-    plt.imshow(img, cmap='gray')
-    plt.title('sigma=3, kernel_size=3')
+    # plt.subplot(1, 3, 2)
+    # img = plt.imread(os.path.join(path_dir, 'gaussian_3_3_lenna.jpg'))
+    # plt.imshow(img, cmap='gray')
+    # plt.title('sigma=3, kernel_size=3')
 
-    plt.subplot(1, 3, 3)
-    img = plt.imread(os.path.join(path_dir, 'gaussian_3_5_lenna.jpg'))
-    plt.imshow(img, cmap='gray')
-    plt.title('sigma=3, kernel_size=5')
+    # plt.subplot(1, 3, 3)
+    # img = plt.imread(os.path.join(path_dir, 'gaussian_3_5_lenna.jpg'))
+    # plt.imshow(img, cmap='gray')
+    # plt.title('sigma=3, kernel_size=5')
 
-    plt.show()
-    ####################################################
-    # 高斯核size相同时，不同sigma高斯核滤波后图像与原图像的比较
-    plt.subplot(1, 3, 1)
-    img = plt.imread(os.path.join(path_dir, 'lenna.jpg'))
-    plt.imshow(img, cmap='gray')
-    plt.title('origin')
+    # plt.show()
+    # ####################################################
+    # # 高斯核size相同时，不同sigma高斯核滤波后图像与原图像的比较
+    # plt.subplot(1, 3, 1)
+    # img = plt.imread(os.path.join(path_dir, 'lenna.jpg'))
+    # plt.imshow(img, cmap='gray')
+    # plt.title('origin')
 
-    plt.subplot(1, 3, 2)
-    img = plt.imread(os.path.join(path_dir, 'gaussian_1_5_lenna.jpg'))
-    plt.imshow(img, cmap='gray')
-    plt.title('sigma=1, kernel_size=5')
+    # plt.subplot(1, 3, 2)
+    # img = plt.imread(os.path.join(path_dir, 'gaussian_1_5_lenna.jpg'))
+    # plt.imshow(img, cmap='gray')
+    # plt.title('sigma=1, kernel_size=5')
 
-    plt.subplot(1, 3, 3)
-    img = plt.imread(os.path.join(path_dir, 'gaussian_3_5_lenna.jpg'))
-    plt.imshow(img, cmap='gray')
-    plt.title('sigma=3, kernel_size=5')
+    # plt.subplot(1, 3, 3)
+    # img = plt.imread(os.path.join(path_dir, 'gaussian_3_5_lenna.jpg'))
+    # plt.imshow(img, cmap='gray')
+    # plt.title('sigma=3, kernel_size=5')
 
-    plt.show()
+    # plt.show()
 
+
+display()
 
 if __name__ == '__main__':
     main()
